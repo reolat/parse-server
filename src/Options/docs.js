@@ -137,3 +137,4 @@
  * @property {Function} validatorCallback a callback function to be invoked to validate the password
  * @property {String} validatorPattern a RegExp object or a regex string representing the pattern to enforce
  */
+
