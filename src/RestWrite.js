@@ -105,6 +105,9 @@ RestWrite.prototype.execute = function () {
       return this.validateAuthData();
     })
     .then(() => {
+      return this.expandFilesForExistingObjects();
+    })
+    .then(() => {
       return this.runBeforeSaveTrigger();
     })
     .then(() => {
@@ -119,9 +122,6 @@ RestWrite.prototype.execute = function () {
     })
     .then(() => {
       return this.transformUser();
-    })
-    .then(() => {
-      return this.expandFilesForExistingObjects();
     })
     .then(() => {
       return this.destroyDuplicatedSessions();
@@ -1265,6 +1265,8 @@ RestWrite.prototype.expandFilesForExistingObjects = function () {
   // Check whether we have a short-circuited response - only then run expansion.
   if (this.response && this.response.response) {
     this.config.filesController.expandFilesInObject(this.config, this.response.response);
+  } else if (this.data) {
+    this.config.filesController.expandFilesInObject(this.config, this.data);
   }
 };
 
