@@ -257,7 +257,9 @@ export function handleParseHeaders(req, res, next) {
 }
 
 function getClientIp(req) {
-  if (req.headers['x-forwarded-for']) {
+  if (req.headers['x-original-forwarded-for']) {
+    return req.headers['x-original-forwarded-for'];
+  } else if (req.headers['x-forwarded-for']) {
     // try to get from x-forwared-for if it set (behind reverse proxy)
     return req.headers['x-forwarded-for'].split(',')[0];
   } else if (req.connection && req.connection.remoteAddress) {
