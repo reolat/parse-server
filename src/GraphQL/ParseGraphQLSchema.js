@@ -66,6 +66,7 @@ class ParseGraphQLSchema {
   log: any;
   appId: string;
   graphQLCustomTypeDefs: ?(string | GraphQLSchema | DocumentNode | GraphQLNamedType[]);
+  customLoad: ?Function;
 
   constructor(
     params: {
@@ -74,6 +75,7 @@ class ParseGraphQLSchema {
       log: any,
       appId: string,
       graphQLCustomTypeDefs: ?(string | GraphQLSchema | DocumentNode | GraphQLNamedType[]),
+      customLoad: ?Function,
     } = {}
   ) {
     this.parseGraphQLController =
@@ -85,6 +87,7 @@ class ParseGraphQLSchema {
     this.log = params.log || requiredParameter('You must provide a log instance!');
     this.graphQLCustomTypeDefs = params.graphQLCustomTypeDefs;
     this.appId = params.appId || requiredParameter('You must provide the appId!');
+    this.customLoad = params.customLoad;
   }
 
   async load() {
@@ -167,6 +170,11 @@ class ParseGraphQLSchema {
         fields: this.graphQLSubscriptions,
       });
       this.addGraphQLType(graphQLSubscription, true, true);
+    }
+
+    // invoke custom hook, if it exists
+    if (this.customLoad && typeof this.customLoad === 'function') {
+      this.customLoad(this);
     }
 
     this.graphQLAutoSchema = new GraphQLSchema({
